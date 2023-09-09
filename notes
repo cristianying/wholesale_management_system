@@ -1,0 +1,11 @@
+Folder Strucutre
+
+- if a compoenents is used in multiple places put in the component folder
+- each page should have its own folder for easier search, not too nested not too flat strucutre
+
+next steps:
+
+- complete the orders details pages
+  - implement delete
+  - after this implement the form input restrictions. i.e. cannot input more than the avaialbe box quantity
+- add client different delivery address to logic
