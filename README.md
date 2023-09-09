@@ -2,7 +2,7 @@
 
 To set up in your local machine
 
-1. git clone https://github.com/cristianying/yelp_v2_pern_stack.git
+1. git clone https://github.com/cristianying/wholesale_management_system.git
 2. npm install in both server and client
 3. set up .env if not already there, with below text (xxxxx = set up according to ur own settings)
 
