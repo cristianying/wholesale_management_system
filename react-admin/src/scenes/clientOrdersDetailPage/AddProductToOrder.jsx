@@ -16,11 +16,11 @@ import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
 import FormTextField from "../../components/FormsUI/Textfield";
 import FormButton from "../../components/FormsUI/Button";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const AddProductToOrder = ({ setOpenAdd, products, setProducts }) => {
-  const { id } = useParams();
+const AddProductToOrder = ({ setOpenAdd, products, setProducts, orderId }) => {
+  // const { id } = useParams();
 
   const [productId, setProductId] = useState("");
   const [productRefId, setProductRefId] = useState("");
@@ -41,7 +41,7 @@ const AddProductToOrder = ({ setOpenAdd, products, setProducts }) => {
     e.preventDefault();
     try {
       const response = await warehousedb.post(
-        `/api/v1/client_order_details/${id}/addProduct`,
+        `/api/v1/client_order_details/${orderId}/addProduct`,
         {
           product_id: productId,
           box_quantity: boxQuantity,
@@ -105,7 +105,8 @@ const AddProductToOrder = ({ setOpenAdd, products, setProducts }) => {
             sx={{ m: 1, bgcolor: colors.greenAccent[700], borderRadius: "8px" }}
           />
           <Typography component="h1" variant="h5">
-            Add new product to order {id} <form action="" method="post"></form>
+            Add new product to order {orderId}{" "}
+            <form action="" method="post"></form>
           </Typography>
           <Box
             component="form"
