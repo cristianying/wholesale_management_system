@@ -33,6 +33,6 @@ app.use(
 app.use("/api/v1/products", require("./routes/products"));
 
 const port = process.env.PORT || 3000;
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
   console.log(`server is up and listening on port ${port}`);
 });
