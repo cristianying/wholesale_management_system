@@ -72,7 +72,7 @@ CREATE TABLE products (
     sub_type_id INT NOT NULL, 
     factory_id INT NOT NULL,
     unit_cost DECIMAL(32,4),
-    photos bytea,
+    image_json jsonb,
     current_box_quantity INT,
     pack_per_box INT,
     pieces_per_pack INT,
