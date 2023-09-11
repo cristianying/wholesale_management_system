@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AddOrderToProduct from "./AddProductToOrder";
 import EditOrderToProduct from "./EditOrderToProduct";
 
-const ClientOrdersDetailPage = ({ setAuth }) => {
+const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const effectRan = useRef(false);
@@ -94,63 +94,63 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
     setOpenEdit(true);
   };
 
-  useEffect(() => {
-    // since use effect runs twice, this will stop it from running as it will be set to false when it unmounts
-    if (effectRan.current === false) {
-      const fetchData = async () => {
-        try {
-          const order_details = await warehousedb.get(
-            `/api/v1/client_order_details/${id}`,
-            {
-              headers: { token: localStorage.token },
-            }
-          );
+  // useEffect(() => {
+  // since use effect runs twice, this will stop it from running as it will be set to false when it unmounts
+  // if (effectRan.current === false) {
+  // const fetchData = async () => {
+  // try {
+  //   const order_details = await warehousedb.get(
+  //     `/api/v1/client_order_details/${id}`,
+  //     {
+  //       headers: { token: localStorage.token },
+  //     }
+  //   );
 
-          // if (products.length === 0) {
-          const products = await warehousedb.get("/api/v1/products", {
-            headers: { token: localStorage.token },
-          });
-          // }
-          // console.log(order_details.data.data.order_products);
-          setOrderProducts(order_details.data.data.order_products);
-          setProducts(products.data.data.products);
-        } catch (err) {
-          localStorage.removeItem("token");
-          setAuth(false);
-          console.log(err);
-        }
-      };
+  // if (products.length === 0) {
+  // const products = await warehousedb.get("/api/v1/products", {
+  // headers: { token: localStorage.token },
+  // });
+  // }
+  // console.log(order_details.data.data.order_products);
+  // setOrderProducts(order_details.data.data.order_products);
+  //   setProducts(products.data.data.products);
+  // } catch (err) {
+  //   localStorage.removeItem("token");
+  //   setAuth(false);
+  //   console.log(err);
+  // }
+  // };
 
-      fetchData();
-      return () => {
-        effectRan.current = true;
-      };
-    }
-  }, [id, setOrderProducts]);
+  // fetchData();
+  //   return () => {
+  //     effectRan.current = true;
+  //   };
+  // }
+  // }, [orderId, setOrderProducts]);
 
   const columns = [
     {
       field: "product_id",
-      headerName: "product id",
+      headerName: "Product ID",
       flex: 1,
       cellClassName: "name-column--cell",
       editable: true,
     },
     {
       field: "product_reference_id",
-      headerName: "Product Ref ID",
+      headerName: "Ref ID",
       flex: 1,
       editable: true,
     },
     {
       field: "box_quantity",
-      headerName: "Box Quantity",
+      headerName: "Boxes",
       flex: 1,
       editable: true,
     },
     {
       field: "piece_sell_price",
-      headerName: "Piece Sell Price",
+      headerName: "Unit Price",
       flex: 1,
       editable: true,
     },
@@ -158,7 +158,9 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
       field: "image_json",
       headerName: "Image",
       editable: true,
-      flex: 3,
+      flex: 2,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => {
         return (
           <>
@@ -166,7 +168,7 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
               <img
                 src={params.value.url ? params.value.url : params.value}
                 style={{
-                  alignSelf: "center",
+                  justifyContent: "center",
                   height: "100%",
                 }}
               />
@@ -182,11 +184,13 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
       headerName: "Actions",
       description: "Actions column.",
       sortable: false,
-      minWidth: 150,
+      // flex: 1,
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => {
         return (
           <>
-            <Stack spacing={2} direction="row">
+            <Stack spacing={1} direction="column">
               <Tooltip title="Save Changes" arrow>
                 <Button
                   onClick={(e) => {
@@ -232,9 +236,9 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
   ];
 
   return (
-    <Box m="10px">
+    <Box ml="10px">
       <Box display="flex" justifyContent="space-between">
-        <Header title={"Order " + id} subtitle="Ordered products details" />
+        <Header title={"#" + orderId} subtitle="Ordered products details" />
         <Button
           onClick={() => setOpenAdd(true)}
           sx={{
@@ -266,6 +270,7 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
               setOpenAdd={setOpenAdd}
               products={products}
               setProducts={setProducts}
+              orderId={orderId}
             />
           </DialogContent>
         </Dialog>
@@ -328,7 +333,7 @@ const ClientOrdersDetailPage = ({ setAuth }) => {
           getRowId={(row) => row.order_detail_id}
           rows={orderProducts}
           columns={columns}
-          rowHeight={120}
+          rowHeight={150}
           components={{
             Toolbar: GridToolbar,
           }}

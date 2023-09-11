@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization.js");
 router.get("/", authorization, async (req, res) => {
   try {
     const orders = await db.query(
-      "select o.*, c.name as client_name from client_orders o left join clients c on c.client_id = o.client_id where o.user_id=$1 order by 1 desc;",
+      "select o.order_id, o.user_id, o.client_id, DATE(o.created_at) as created_at,DATE(o.updated_at) as updated_at,o.status_id,o.status_name, c.name as client_name from client_orders o left join clients c on c.client_id = o.client_id where o.user_id=$1 order by 1 desc;",
       [req.user.id]
     );
 
