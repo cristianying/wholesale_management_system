@@ -13,67 +13,47 @@ import { useTheme } from "@mui/material";
 import { WarehouseContext } from "../../context/WarehouseContext";
 import warehousedb from "../../apis/Warehousedb";
 import { useContext, useEffect, useRef, useState } from "react";
-// import AddClient from "./AddClient";
+import AddClientAddress from "./AddClientAddress";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { toast } from "react-toastify";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { useNavigate, useParams } from "react-router-dom";
-import AddOrderToProduct from "./AddProductToOrder";
-import EditOrderToProduct from "./EditOrderToProduct";
 import AddIcon from "@mui/icons-material/Add";
+import EditClientAddress from "./EditClientAddress";
 
-const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
+const ClientAddresses = ({ setAuth }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { clients, setClients } = useContext(WarehouseContext);
+  const { clientAddresses, setClientAddresses } = useContext(WarehouseContext);
   const effectRan = useRef(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [editOrderProduct, setEditOrderProduct] = useState([]);
-  const [productQuantity, setProductQuantity] = useState();
-  const { id } = useParams();
-  const { orderProducts, setOrderProducts } = useContext(WarehouseContext);
-  const { products, setProducts } = useContext(WarehouseContext);
+  const [editClientAddress, setEditClientAddress] = useState([]);
 
-  const onDelete = async (e, selectedProduct) => {
+  //   https://stackoverflow.com/questions/70951533/custom-edit-and-delete-components-on-row-datagrid-mui-v5-component-hovered
+  const onDelete = async (e, selectedAddress) => {
     e.stopPropagation();
-    // console.log(selectedProduct);
+    // console.log(selectedAddress);
     if (
       window.confirm(
-        `Are you sure you want to delete "${selectedProduct.product_id}"?`
+        `Are you sure you want to delete ${selectedAddress.client_name}'s address?`
       )
     ) {
       try {
-        const results = await warehousedb.delete(
-          `/api/v1/client_order_details/${selectedProduct.order_detail_id}`,
-          {
-            data: {
-              product_id: selectedProduct.product_id,
-              product_order_delete_quantity: selectedProduct.box_quantity,
-            },
-          }
+        await warehousedb.delete(
+          `/api/v1/client_addresses/${selectedAddress.delivery_address_id}`
         );
-
         toast.warn(
-          `Product "${selectedProduct.product_id}" has been deleted from order`
+          `Client ${selectedAddress.client_name}'s address has been deleted`
         );
-
-        setOrderProducts(
-          orderProducts.filter((orderProduct) => {
+        setClientAddresses(
+          clientAddresses.filter((address) => {
             return (
-              orderProduct.order_detail_id !== selectedProduct.order_detail_id
+              address.delivery_address_id !==
+              selectedAddress.delivery_address_id
             );
           })
         );
-
-        const i = products.findIndex(
-          (product) => product.product_id === selectedProduct.product_id
-        );
-
-        products[i].current_box_quantity =
-          results.data.data.updated_current_box_quantity;
-
-        setProducts(products);
       } catch (err) {
         console.log(err);
       }
@@ -81,123 +61,85 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
   };
 
   const onEdit = (e, row) => {
-    const orderProduct = orderProducts.filter((orderProduct) => {
-      return orderProduct.order_detail_id === row.order_detail_id;
+    var clientAddress = clientAddresses.filter((clientAddress) => {
+      return clientAddress.delivery_address_id === row.delivery_address_id;
     });
-
-    const selectedProduct = products.filter((product) => {
-      return product.product_id === row.product_id;
-    });
-    setEditOrderProduct(orderProduct);
-    setProductQuantity(selectedProduct[0].current_box_quantity);
-    // console.log(order);
+    setEditClientAddress(clientAddress);
+    // console.log(clientAddress);
     e.preventDefault();
     setOpenEdit(true);
   };
 
-  // useEffect(() => {
-  // since use effect runs twice, this will stop it from running as it will be set to false when it unmounts
-  // if (effectRan.current === false) {
-  // const fetchData = async () => {
-  // try {
-  //   const order_details = await warehousedb.get(
-  //     `/api/v1/client_order_details/${id}`,
-  //     {
-  //       headers: { token: localStorage.token },
-  //     }
-  //   );
+  useEffect(() => {
+    // since use effect runs twice, this will stop it from running as it will be set to false when it unmounts
+    if (effectRan.current === false) {
+      const fetchData = async () => {
+        try {
+          const client_addresses = await warehousedb.get(
+            "/api/v1/client_addresses",
+            {
+              headers: { token: localStorage.token },
+            }
+          );
+          const res = await warehousedb.get("/api/v1/clients", {
+            headers: { token: localStorage.token },
+          });
 
-  // if (products.length === 0) {
-  // const products = await warehousedb.get("/api/v1/products", {
-  // headers: { token: localStorage.token },
-  // });
-  // }
-  // console.log(order_details.data.data.order_products);
-  // setOrderProducts(order_details.data.data.order_products);
-  //   setProducts(products.data.data.products);
-  // } catch (err) {
-  //   localStorage.removeItem("token");
-  //   setAuth(false);
-  //   console.log(err);
-  // }
-  // };
-
-  // fetchData();
-  //   return () => {
-  //     effectRan.current = true;
-  //   };
-  // }
-  // }, [orderId, setOrderProducts]);
+          setClientAddresses(client_addresses.data.data.client_addresses);
+          setClients(res.data.data.client);
+          // console.log(clientAddresses);
+        } catch (err) {
+          console.log(err);
+          localStorage.removeItem("token");
+          setAuth(false);
+        }
+      };
+      fetchData();
+      return () => {
+        effectRan.current = true;
+      };
+    }
+  }, [setAuth, setClientAddresses]);
 
   const columns = [
     {
-      field: "product_id",
-      headerName: "Product ID",
+      field: "client_name",
+      headerName: "Client Name",
       flex: 1,
       cellClassName: "name-column--cell",
       editable: true,
     },
     {
-      field: "product_reference_id",
-      headerName: "Ref ID",
+      field: "name",
+      headerName: "Address Name",
+      flex: 1,
+      cellClassName: "name-column--cell",
+      editable: true,
+    },
+    { field: "email", headerName: "email", flex: 1, editable: true },
+    {
+      field: "address",
+      headerName: "address",
       flex: 1,
       editable: true,
     },
-    {
-      field: "box_quantity",
-      headerName: "Boxes",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "piece_sell_price",
-      headerName: "Unit Price",
-      flex: 1,
-      editable: true,
-    },
-    {
-      field: "image_json",
-      headerName: "Image",
-      editable: true,
-      flex: 2,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) => {
-        return (
-          <>
-            {params.value ? (
-              <img
-                src={params.value.url ? params.value.url : params.value}
-                style={{
-                  justifyContent: "center",
-                  height: "100%",
-                }}
-              />
-            ) : (
-              ""
-            )}
-          </>
-        );
-      },
-    },
+    { field: "country", headerName: "country", flex: 0.5, editable: true },
+    { field: "telephone", headerName: "telephone", flex: 0.5, editable: true },
+    { field: "note", headerName: "note", flex: 1, editable: true },
     {
       field: "deleteButton",
       headerName: "Actions",
       description: "Actions column.",
       sortable: false,
-      // flex: 1,
-      align: "center",
-      headerAlign: "center",
+      minWidth: 150,
       renderCell: (params) => {
         return (
           <>
-            <Stack spacing={1} direction="column">
+            <Stack spacing={2} direction="row">
               <Tooltip title="Save Changes" arrow>
                 <Button
-                  onClick={(e) => {
-                    e.ignore = true;
-                    onEdit(e, params.row);
-                  }}
+                  // onClick={() => setOpenEdit(true)}
+                  onClick={(e) => onEdit(e, params.row)}
                   variant="contained"
                   sx={{
                     minWidth: "20px",
@@ -237,9 +179,12 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
   ];
 
   return (
-    <Box ml="10px">
+    <Box m="10px">
       <Box display="flex" justifyContent="space-between">
-        <Header title={"#" + orderId} subtitle="Ordered products details" />
+        <Header
+          title="Clients Addresses"
+          subtitle="List of your Clients Addresses"
+        />
         <Button
           onClick={() => setOpenAdd(true)}
           sx={{
@@ -251,15 +196,13 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
             },
           }}
         >
-          <Tooltip title="Add new order" arrow>
+          <Tooltip title="Add new client" arrow>
             <AddIcon />
           </Tooltip>
         </Button>
         <Dialog
           open={openAdd}
           onClose={() => setOpenAdd(false)}
-          aria-labelledby="dialog-title"
-          aria-describedby="dialog-description"
           sx={{
             ".css-1qxadfk-MuiPaper-root-MuiDialog-paper": {
               backgroundColor: colors.primary[500],
@@ -267,14 +210,14 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
           }}
         >
           <DialogContent>
-            <AddOrderToProduct
+            <AddClientAddress
               setOpenAdd={setOpenAdd}
-              products={products}
-              setProducts={setProducts}
-              orderId={orderId}
+              clients={clients}
+              setClientAddresses={setClientAddresses}
             />
           </DialogContent>
         </Dialog>
+
         <Dialog
           open={openEdit}
           onClose={() => setOpenEdit(false)}
@@ -285,15 +228,11 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
           }}
         >
           <DialogContent>
-            <EditOrderToProduct
+            <EditClientAddress
               setOpenEdit={setOpenEdit}
-              editOrderProduct={editOrderProduct}
-              setOrderProducts={setOrderProducts}
-              orderProducts={orderProducts}
-              products={products}
-              productQuantity={productQuantity}
-              setProductQuantity={setProductQuantity}
-              setProducts={setProducts}
+              editClientAddress={editClientAddress}
+              setClientAddresses={setClientAddresses}
+              clientAddresses={clientAddresses}
             />
           </DialogContent>
         </Dialog>
@@ -331,10 +270,9 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
         }}
       >
         <DataGrid
-          getRowId={(row) => row.order_detail_id}
-          rows={orderProducts}
+          getRowId={(row) => row.delivery_address_id}
+          rows={clientAddresses}
           columns={columns}
-          rowHeight={150}
           components={{
             Toolbar: GridToolbar,
           }}
@@ -344,4 +282,4 @@ const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
   );
 };
 
-export default ClientOrdersDetailPage;
+export default ClientAddresses;

@@ -95,6 +95,21 @@ CREATE TABLE client_order_details (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE client_delivery_addresses (
+    delivery_address_id SERIAL,
+    user_id UUID,
+    client_id UUID,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    telephone VARCHAR(255),
+    address VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    note VARCHAR(255),
+    PRIMARY KEY (delivery_address_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 --create extension if not exists "uuid-ossp"; (need this in order for postgre to run the function uuid, just paste it in the database from the terminal)
 
 --ALTER TABLE restaurants ADD COLUMN user_id UUID REFERENCES users(user_id);

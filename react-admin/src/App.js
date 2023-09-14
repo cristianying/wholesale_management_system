@@ -23,6 +23,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ClientOrders from "./scenes/clientOrders";
 import ClientOrdersDetailPage from "./scenes/clientOrdersDetailPage";
+import ClientAddresses from "./scenes/clientAddresses";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -83,6 +84,16 @@ function App() {
                         <Navigate to="/login" />
                       ) : (
                         <Clients setAuth={setAuth} />
+                      )
+                    }
+                  />
+                  <Route
+                    path="/clients_addresses"
+                    element={
+                      !isAuthenticated ? (
+                        <Navigate to="/login" />
+                      ) : (
+                        <ClientAddresses setAuth={setAuth} />
                       )
                     }
                   />

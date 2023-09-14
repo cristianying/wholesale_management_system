@@ -20,6 +20,9 @@ app.use("/api/v1/restaurants", require("./routes/restaurants"));
 // clients routes
 app.use("/api/v1/clients", require("./routes/clients"));
 
+// client addresses routes
+app.use("/api/v1/client_addresses", require("./routes/client_addresses"));
+
 // orders routes
 app.use("/api/v1/client_orders", require("./routes/client_orders"));
 
