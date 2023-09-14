@@ -32,6 +32,10 @@ app.use(
   require("./routes/client_order_details")
 );
 
+app.get("/hello", (req, res) => {
+  res.send("Hello, World!");
+});
+
 // products routes
 app.use("/api/v1/products", require("./routes/products"));
 
