@@ -21,6 +21,7 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 // import { useNavigate } from "react-router-dom";
 import EditOrder from "./EditOrder";
 import ClientOrdersDetailPage from "../clientOrdersDetailPage";
+import AddIcon from "@mui/icons-material/Add";
 
 const ClientOrders = ({ setAuth }) => {
   const theme = useTheme();
@@ -236,7 +237,7 @@ const ClientOrders = ({ setAuth }) => {
               }}
             >
               <Tooltip title="Add new order" arrow>
-                <PersonAddAlt1Icon />
+                <AddIcon />
               </Tooltip>
             </Button>
             <Dialog

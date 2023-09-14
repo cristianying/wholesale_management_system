@@ -1,16 +1,7 @@
 import React, { useState, useContext } from "react";
 import { WarehouseContext } from "../../context/WarehouseContext";
 import warehousedb from "../../apis/Warehousedb";
-import {
-  Box,
-  Container,
-  InputLabel,
-  Select,
-  TextField,
-  TextareaAutosize,
-  Typography,
-  MenuItem,
-} from "@mui/material";
+import { Box, Container, TextField, Typography, MenuItem } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
