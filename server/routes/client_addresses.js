@@ -23,13 +23,13 @@ router.get("/", authorization, async (req, res) => {
   }
 });
 
-// get specific client address
+// // get specific client address
 router.get("/:id", authorization, async (req, res) => {
   try {
     // console.log(req.params.id, req.user.id);
     const client_addresses = await db.query(
-      "select a.*, c.name as client_name from client_delivery_addresses a left join clients c on a.client_id = c.client_id where a.user_id =$1;",
-      [req.user.id]
+      "select a.*, c.name as client_name from client_delivery_addresses a left join clients c on a.client_id = c.client_id where a.user_id =$1 and a.client_id = $2;",
+      [req.user.id, req.params.id]
     );
 
     // console.log(restaurant.rows[0]);

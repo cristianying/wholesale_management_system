@@ -26,7 +26,6 @@ const ClientOrders = ({ setAuth }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { clientOrders, setClientOrders } = useContext(WarehouseContext);
-  const { clientAddresses, setClientAddresses } = useContext(WarehouseContext);
   const { clients, setClients } = useContext(WarehouseContext);
   const { setOrderProducts } = useContext(WarehouseContext);
   const { setProducts } = useContext(WarehouseContext);
@@ -82,22 +81,9 @@ const ClientOrders = ({ setAuth }) => {
             headers: { token: localStorage.token },
           });
 
-          const client_addresses = await warehousedb.get(
-            `/api/v1/client_addresses`,
-            {
-              headers: { token: localStorage.token },
-            }
-          );
-
           if (responce.data.data.orders.length !== 0) {
-            // console.log(
-            //   new Date(
-            //     responce.data.data.orders[0].created_at
-            //   ).toLocaleDateString()
-            // );
-            // console.log();
+            // console.log(responce.data.data.orders);
             setClientOrders(responce.data.data.orders);
-            setClientAddresses(client_addresses.data.data.client_addresses);
           }
 
           setClients(responce.data.data.clients);
@@ -204,7 +190,7 @@ const ClientOrders = ({ setAuth }) => {
   ];
 
   const handleRowClick = (params) => {
-    console.log(params);
+    // console.log(params);
     // navigate(`/client_order_detail_page/${params.row.order_id}`);
     setOrderId(params.row.order_id);
     const fetchData = async () => {
@@ -237,7 +223,12 @@ const ClientOrders = ({ setAuth }) => {
   return (
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" width="100%">
-        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            // overflow: "auto"
+          }}
+        >
           <Box display="flex" justifyContent="space-between">
             <Header title="Orders" subtitle="List of your Clients' Orders" />
             <Button
@@ -267,7 +258,11 @@ const ClientOrders = ({ setAuth }) => {
               }}
             >
               <DialogContent>
-                <AddOrder setOpenAdd={setOpenAdd} clients={clients} />
+                <AddOrder
+                  setOpenAdd={setOpenAdd}
+                  clients={clients}
+                  setAuth={setAuth}
+                />
               </DialogContent>
             </Dialog>
             <Dialog
@@ -340,7 +335,12 @@ const ClientOrders = ({ setAuth }) => {
           </Box>
         </Box>
 
-        <Box sx={{ flexGrow: 2, overflow: "auto" }}>
+        <Box
+          sx={{
+            flexGrow: 2,
+            // overflow: "auto"
+          }}
+        >
           <ClientOrdersDetailPage orderId={orderId} />
         </Box>
       </Box>
