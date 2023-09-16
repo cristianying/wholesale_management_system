@@ -12,26 +12,25 @@ import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { WarehouseContext } from "../../context/WarehouseContext";
 import warehousedb from "../../apis/Warehousedb";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 // import AddClient from "./AddClient";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { toast } from "react-toastify";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { useNavigate, useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import AddOrderToProduct from "./AddProductToOrder";
 import EditOrderToProduct from "./EditOrderToProduct";
 import AddIcon from "@mui/icons-material/Add";
 
-const ClientOrdersDetailPage = ({ setAuth, orderId }) => {
+const ClientOrdersDetailPage = ({ orderId }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const effectRan = useRef(false);
+  // const effectRan = useRef(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editOrderProduct, setEditOrderProduct] = useState([]);
   const [productQuantity, setProductQuantity] = useState();
-  const { id } = useParams();
+  // const { id } = useParams();
   const { orderProducts, setOrderProducts } = useContext(WarehouseContext);
   const { products, setProducts } = useContext(WarehouseContext);
 

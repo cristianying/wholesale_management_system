@@ -1,17 +1,6 @@
-import React, { useState, useContext } from "react";
-import { WarehouseContext } from "../../context/WarehouseContext";
+import React, { useState } from "react";
 import warehousedb from "../../apis/Warehousedb";
-import {
-  Box,
-  Container,
-  InputLabel,
-  Select,
-  TextField,
-  TextareaAutosize,
-  Typography,
-  MenuItem,
-  Grid,
-} from "@mui/material";
+import { Box, Container, Typography, MenuItem, Grid } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
@@ -42,7 +31,7 @@ const EditOrder = ({
     },
     {
       id: "2",
-      name: "paid",
+      name: "blocked",
     },
     {
       id: "3",
@@ -55,6 +44,18 @@ const EditOrder = ({
     {
       id: "5",
       name: "cancelled",
+    },
+  ];
+
+  const payment_statuses = [
+    {
+      name: "Not paid",
+    },
+    {
+      name: "Partial",
+    },
+    {
+      name: "Paid",
     },
   ];
 

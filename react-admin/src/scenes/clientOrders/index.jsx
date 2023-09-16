@@ -17,7 +17,6 @@ import AddOrder from "./AddOrder";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { toast } from "react-toastify";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 // import { useNavigate } from "react-router-dom";
 import EditOrder from "./EditOrder";
 import ClientOrdersDetailPage from "../clientOrdersDetailPage";
@@ -27,6 +26,7 @@ const ClientOrders = ({ setAuth }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { clientOrders, setClientOrders } = useContext(WarehouseContext);
+  const { clientAddresses, setClientAddresses } = useContext(WarehouseContext);
   const { clients, setClients } = useContext(WarehouseContext);
   const { setOrderProducts } = useContext(WarehouseContext);
   const { setProducts } = useContext(WarehouseContext);
@@ -81,14 +81,23 @@ const ClientOrders = ({ setAuth }) => {
           const responce = await warehousedb.get("/api/v1/client_orders", {
             headers: { token: localStorage.token },
           });
+
+          const client_addresses = await warehousedb.get(
+            `/api/v1/client_addresses`,
+            {
+              headers: { token: localStorage.token },
+            }
+          );
+
           if (responce.data.data.orders.length !== 0) {
             // console.log(
             //   new Date(
             //     responce.data.data.orders[0].created_at
             //   ).toLocaleDateString()
             // );
-
+            // console.log();
             setClientOrders(responce.data.data.orders);
+            setClientAddresses(client_addresses.data.data.client_addresses);
           }
 
           setClients(responce.data.data.clients);
@@ -126,13 +135,19 @@ const ClientOrders = ({ setAuth }) => {
       flex: 2,
       editable: true,
     },
-    // {
-    //   field: "updated_at",
-    //   headerName: "updated_at",
-    //   flex: 2,
-    //   editable: true,
-    // },
+    {
+      field: "client_address",
+      headerName: "Delivery Address",
+      flex: 2,
+      editable: true,
+    },
     { field: "status_name", headerName: "Status", flex: 0.8, editable: true },
+    {
+      field: "payment_status",
+      headerName: "Payment",
+      flex: 0.8,
+      editable: true,
+    },
     {
       field: "deleteButton",
       headerName: "Actions",
@@ -189,7 +204,7 @@ const ClientOrders = ({ setAuth }) => {
   ];
 
   const handleRowClick = (params) => {
-    // console.log(params);
+    console.log(params);
     // navigate(`/client_order_detail_page/${params.row.order_id}`);
     setOrderId(params.row.order_id);
     const fetchData = async () => {
@@ -222,7 +237,7 @@ const ClientOrders = ({ setAuth }) => {
   return (
     <Box m="10px">
       <Box display="flex" justifyContent="space-between" width="100%">
-        <Box sx={{ flexGrow: 1, overflow: "clip" }}>
+        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
           <Box display="flex" justifyContent="space-between">
             <Header title="Orders" subtitle="List of your Clients' Orders" />
             <Button
@@ -325,7 +340,7 @@ const ClientOrders = ({ setAuth }) => {
           </Box>
         </Box>
 
-        <Box sx={{ flexGrow: 2, overflow: "clip" }}>
+        <Box sx={{ flexGrow: 2, overflow: "auto" }}>
           <ClientOrdersDetailPage orderId={orderId} />
         </Box>
       </Box>

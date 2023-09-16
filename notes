@@ -6,7 +6,6 @@ Folder Strucutre
 next steps:
 
 - add client different delivery address to logic
-    - add delete and update functionality 
     - add ability to select/update which address to ship the orders too
     - add type of shipment i.e. self pick up, truck, plane, etc..
     - decouple status, to show payment status on its own column
