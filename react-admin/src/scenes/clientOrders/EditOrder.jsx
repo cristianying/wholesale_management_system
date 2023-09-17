@@ -26,7 +26,6 @@ const EditOrder = ({
     id: editOrder[0].status_id,
     name: editOrder[0].status_name,
   });
-  // console.log("its me: ", selectAddresses);
 
   const [paymentStatus, setPaymentStatus] = useState(
     editOrder[0].payment_status
@@ -91,9 +90,9 @@ const EditOrder = ({
       clientOrders[index].status_id = status.id;
       clientOrders[index].status_name = status.name;
       clientOrders[index].payment_status = paymentStatus;
+      clientOrders[index].address_name = jsonAddress.address_name;
 
       setClientOrders(clientOrders);
-
       setOpenEdit(false);
     } catch (err) {
       console.log(err);
