@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization.js");
 router.get("/", authorization, async (req, res) => {
   try {
     const orders = await db.query(
-      "select o.order_id, o.user_id, o.client_id, DATE(o.created_at) as created_at,DATE(o.updated_at) as updated_at,o.status_id,o.status_name, c.name as client_name from client_orders o left join clients c on c.client_id = o.client_id where o.user_id=$1 order by 1 desc;",
+      "select o.*, c.name as client_name, ca.address as client_address, ca.name as address_name from client_orders o left join clients c on c.client_id = o.client_id left join client_delivery_addresses ca on ca.delivery_address_id = o.delivery_address_id where o.user_id=$1 order by 1 desc;",
       [req.user.id]
     );
 
@@ -54,21 +54,28 @@ router.post("/", authorization, async (req, res) => {
   try {
     // sql injections protection
     const results = await db.query(
-      "INSERT INTO client_orders (user_id, client_id, created_at, updated_at, status_id, status_name ) VALUES ($1, $2, now(), now(), $3, $4) returning *",
-      [req.user.id, req.body.clientId, "1", "created"]
+      "INSERT INTO client_orders (user_id, client_id, created_at, updated_at, status_id, status_name, payment_status, delivery_address_id ) VALUES ($1, $2, now(), now(), $3, $4, $5, $6) returning *",
+      [
+        req.user.id,
+        req.body.clientId,
+        "1",
+        "created",
+        "Not paid",
+        req.body.clientAddressId,
+      ]
     );
 
-    const order_client_name = await db.query(
-      "select name from clients where client_id = $1",
-      [req.body.clientId]
-    );
+    // const order_client_name = await db.query(
+    //   "select name from clients where client_id = $1",
+    //   [req.body.clientId]
+    // );
 
     // console.log(results.rows[0]);
     res.status(200).json({
       status: "Success",
       data: {
         client_order: results.rows[0],
-        order_client_name: order_client_name.rows[0],
+        // order_client_name: order_client_name.rows[0],
       },
     });
   } catch (err) {
@@ -81,11 +88,12 @@ router.put("/:id", async (req, res) => {
   try {
     // sql injections protection
     const results = await db.query(
-      "UPDATE client_orders SET client_id = $1, status_id = $2, status_name = $3, updated_at = now() where order_id = $4 returning *",
+      "UPDATE client_orders SET delivery_address_id = $1, status_id = $2, status_name = $3, updated_at = now(), payment_status = $4 where order_id = $5 returning *",
       [
-        req.body.client_id,
+        req.body.delivery_address_id,
         req.body.status_id,
         req.body.status_name,
+        req.body.payment_status,
         req.params.id,
       ]
     );

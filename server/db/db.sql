@@ -50,9 +50,13 @@ CREATE TABLE client_orders (
     updated_at timestamp NOT NULL,
     status_id INT NOT NULL check(status_id >=1 and status_id <=5),
     status_name VARCHAR(255) NOT NULL,
+    payment_status VARCHAR(255) NOT NULL,
+    delivery_address_id INT NOT NULL,
+    note VARCHAR(255),
     PRIMARY KEY (order_id),
     FOREIGN KEY (client_id) REFERENCES clients(client_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (delivery_address_id) REFERENCES client_delivery_addresses(delivery_address_id)
 );
 ALTER SEQUENCE client_orders_order_id_seq RESTART WITH 100;
 

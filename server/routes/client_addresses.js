@@ -2,13 +2,34 @@ const router = require("express").Router();
 const db = require("../db/index.js");
 const authorization = require("../middleware/authorization.js");
 
-// get all order products
+// get all client address
 router.get("/", authorization, async (req, res) => {
   try {
     // console.log(req.params.id, req.user.id);
     const client_addresses = await db.query(
       "select a.*, c.name as client_name from client_delivery_addresses a left join clients c on a.client_id = c.client_id where a.user_id =$1;",
       [req.user.id]
+    );
+
+    // console.log(restaurant.rows[0]);
+    res.status(200).json({
+      status: "Success",
+      data: {
+        client_addresses: client_addresses.rows,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// // get specific client address
+router.get("/:id", authorization, async (req, res) => {
+  try {
+    // console.log(req.params.id, req.user.id);
+    const client_addresses = await db.query(
+      "select a.*, c.name as client_name from client_delivery_addresses a left join clients c on a.client_id = c.client_id where a.user_id =$1 and a.client_id = $2;",
+      [req.user.id, req.params.id]
     );
 
     // console.log(restaurant.rows[0]);
