@@ -6,7 +6,7 @@ const authorization = require("../middleware/authorization.js");
 router.get("/", authorization, async (req, res) => {
   try {
     const orders = await db.query(
-      "select o.*, c.name as client_name, ca.address as client_address from client_orders o left join clients c on c.client_id = o.client_id left join client_delivery_addresses ca on ca.delivery_address_id = o.delivery_address_id where o.user_id=$1 order by 1 desc;",
+      "select o.*, c.name as client_name, ca.address as client_address, ca.name as address_name from client_orders o left join clients c on c.client_id = o.client_id left join client_delivery_addresses ca on ca.delivery_address_id = o.delivery_address_id where o.user_id=$1 order by 1 desc;",
       [req.user.id]
     );
 
@@ -88,11 +88,12 @@ router.put("/:id", async (req, res) => {
   try {
     // sql injections protection
     const results = await db.query(
-      "UPDATE client_orders SET client_id = $1, status_id = $2, status_name = $3, updated_at = now() where order_id = $4 returning *",
+      "UPDATE client_orders SET delivery_address_id = $1, status_id = $2, status_name = $3, updated_at = now(), payment_status = $4 where order_id = $5 returning *",
       [
-        req.body.client_id,
+        req.body.delivery_address_id,
         req.body.status_id,
         req.body.status_name,
+        req.body.payment_status,
         req.params.id,
       ]
     );

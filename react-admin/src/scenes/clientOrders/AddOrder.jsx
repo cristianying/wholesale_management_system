@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { WarehouseContext } from "../../context/WarehouseContext";
 import warehousedb from "../../apis/Warehousedb";
-import { Box, Container, TextField, Typography, MenuItem } from "@mui/material";
+import { Box, Container, Typography, MenuItem } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { useTheme } from "@emotion/react";
 import { tokens } from "../../theme";
@@ -12,7 +12,7 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
   const [client, setClient] = useState([]);
   const [clientAddress, setClientAddress] = useState("");
   // const [name, setName] = useState("");
-  const { addClientOrders, clientOrders } = useContext(WarehouseContext);
+  const { addClientOrders } = useContext(WarehouseContext);
   const [selectAddresses, setSelectAddresses] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -21,7 +21,6 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
   const handleSubmit = async (e) => {
     // need to JSON parse here, if not it will show error in the menuitem
     const jsonClientAddress = JSON.parse(clientAddress);
-
     setDisabled(true);
     e.preventDefault();
     try {
@@ -41,7 +40,7 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
       response.data.data.client_order.client_name = client.name;
 
       response.data.data.client_order.client_address =
-        jsonClientAddress.address_name;
+        jsonClientAddress.address;
 
       setOpenAdd(false);
       addClientOrders(response.data.data.client_order);
@@ -67,7 +66,7 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
           setSelectAddresses(client_addresses.data.data.client_addresses);
         }
         setClient(selectedClient);
-        // console.log(selectedClient.client_id);
+        // console.log(client_addresses.data.data.client_addresses);
       } catch (err) {
         localStorage.removeItem("token");
         setAuth(false);
@@ -167,6 +166,7 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
                       value={JSON.stringify({
                         delivery_address_id: address.delivery_address_id,
                         address_name: address.name,
+                        address: address.address,
                       })}
                     >
                       {address.name}

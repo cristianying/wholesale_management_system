@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import warehousedb from "../../apis/Warehousedb";
 import { Box, Container, Typography, MenuItem, Grid } from "@mui/material";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -12,18 +12,30 @@ const EditOrder = ({
   editOrder,
   setClientOrders,
   clientOrders,
-  clients,
+  selectAddresses,
 }) => {
-  const [clientId, setClientId] = useState(editOrder[0].client_id);
-  const [name, setName] = useState(editOrder[0].client_name);
+  const effectRan = useRef(false);
+  const [address, setAddress] = useState(
+    JSON.stringify({
+      delivery_address_id: editOrder[0].delivery_address_id,
+      address_name: editOrder[0].address_name,
+      client_address: editOrder[0].client_address,
+    })
+  );
   const [status, setStatus] = useState({
     id: editOrder[0].status_id,
     name: editOrder[0].status_name,
   });
+  // console.log("its me: ", selectAddresses);
+
+  const [paymentStatus, setPaymentStatus] = useState(
+    editOrder[0].payment_status
+  );
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [disabled, setDisabled] = useState(false);
 
+  // console.log(editOrder);
   const order_statuses = [
     {
       id: "1",
@@ -60,21 +72,25 @@ const EditOrder = ({
   ];
 
   const handleSubmit = async (e) => {
+    const jsonAddress = JSON.parse(address);
     setDisabled(true);
     e.preventDefault();
     try {
       await warehousedb.put(`/api/v1/client_orders/${editOrder[0].order_id}`, {
-        client_id: clientId,
+        delivery_address_id: jsonAddress.delivery_address_id,
         status_id: status.id,
         status_name: status.name,
+        payment_status: paymentStatus,
       });
+
       const index = clientOrders.findIndex(
         (order) => order.order_id === editOrder[0].order_id
       );
-      clientOrders[index].client_id = clientId;
-      clientOrders[index].client_name = name;
+      clientOrders[index].delivery_address_id = jsonAddress.delivery_address_id;
+      clientOrders[index].client_address = jsonAddress.client_address;
       clientOrders[index].status_id = status.id;
       clientOrders[index].status_name = status.name;
+      clientOrders[index].payment_status = paymentStatus;
 
       setClientOrders(clientOrders);
 
@@ -85,22 +101,22 @@ const EditOrder = ({
     }
   };
 
-  const handleNameChange = (e) => {
-    const selectedClient = clients.find(
-      (client) => client.client_id === e.target.value
-    );
-    setName(selectedClient.name);
-    setClientId(e.target.value);
-    // console.log("im the client: ", name, clientId);
-  };
-
   const handleStatusChange = (e) => {
     const selectedStatus = order_statuses.find(
       (status) => status.id === e.target.value
     );
     setStatus(selectedStatus);
-    // console.log("im the client: ", status);
   };
+
+  const handlePaymentStatusChange = (e) => {
+    setPaymentStatus(e.target.value);
+  };
+
+  useEffect(() => {
+    return () => {
+      effectRan.current = true;
+    };
+  }, []);
 
   return (
     <>
@@ -143,19 +159,27 @@ const EditOrder = ({
               <Grid item xs={12}>
                 <FormTextField
                   select
-                  label="Change Client"
-                  value={clientId}
+                  label="Change Address"
+                  defaultValue=""
+                  // only set addressId when component is fully mounted
+                  // so that no key/value error shows up
+                  value={effectRan.current ? address : ""}
                   // helperText="Please select your client"
-                  onChange={handleNameChange}
+                  onChange={(e) => setAddress(e.target.value)}
                 >
-                  {clients &&
-                    clients.map((client) => {
+                  {selectAddresses &&
+                    selectAddresses.map((address) => {
                       return (
                         <MenuItem
-                          key={client.client_id}
-                          value={client.client_id}
+                          key={address.delivery_address_id}
+                          // value={address.delivery_address_id}
+                          value={JSON.stringify({
+                            delivery_address_id: address.delivery_address_id,
+                            address_name: address.name,
+                            client_address: address.address,
+                          })}
                         >
-                          {client.name}
+                          {address.name}
                         </MenuItem>
                       );
                     })}
@@ -164,7 +188,7 @@ const EditOrder = ({
               <Grid item xs={12}>
                 <FormTextField
                   select
-                  label="Change Status"
+                  label="Status"
                   value={status.id}
                   // helperText="Please select your client"
                   onChange={handleStatusChange}
@@ -174,6 +198,25 @@ const EditOrder = ({
                       return (
                         <MenuItem key={order_status.id} value={order_status.id}>
                           {order_status.name}
+                        </MenuItem>
+                      );
+                    })}
+                </FormTextField>
+                <FormTextField
+                  select
+                  label="Payment"
+                  value={paymentStatus}
+                  // helperText="Please select your client"
+                  onChange={handlePaymentStatusChange}
+                >
+                  {payment_statuses &&
+                    payment_statuses.map((payment_status) => {
+                      return (
+                        <MenuItem
+                          key={payment_status.name}
+                          value={payment_status.name}
+                        >
+                          {payment_status.name}
                         </MenuItem>
                       );
                     })}

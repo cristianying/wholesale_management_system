@@ -34,6 +34,7 @@ const ClientOrders = ({ setAuth }) => {
   const [openEdit, setOpenEdit] = useState(false);
   const [editOrder, setEditOrder] = useState([]);
   const [orderId, setOrderId] = useState([]);
+  const [selectAddresses, setSelectAddresses] = useState([]);
   // let navigate = useNavigate();
 
   // console.log(clientOrders[0].order_id);
@@ -65,6 +66,29 @@ const ClientOrders = ({ setAuth }) => {
       return order.order_id === row.order_id;
     });
     setEditOrder(order);
+
+    const fetchData = async () => {
+      try {
+        const client_addresses = await warehousedb.get(
+          `/api/v1/client_addresses/${order[0].client_id}`,
+          {
+            headers: { token: localStorage.token },
+          }
+        );
+
+        if (client_addresses.data.data.client_addresses.length !== 0) {
+          setSelectAddresses(client_addresses.data.data.client_addresses);
+          // console.log(client_addresses);
+        }
+      } catch (err) {
+        localStorage.removeItem("token");
+        setAuth(false);
+        console.log(err);
+      }
+    };
+
+    fetchData();
+
     // console.log(order);
     e.preventDefault();
     setOpenEdit(true);
@@ -280,7 +304,7 @@ const ClientOrders = ({ setAuth }) => {
                   editOrder={editOrder}
                   setClientOrders={setClientOrders}
                   clientOrders={clientOrders}
-                  clients={clients}
+                  selectAddresses={selectAddresses}
                 />
               </DialogContent>
             </Dialog>
