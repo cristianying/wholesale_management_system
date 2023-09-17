@@ -42,6 +42,9 @@ const AddOrder = ({ setOpenAdd, clients, setAuth }) => {
       response.data.data.client_order.client_address =
         jsonClientAddress.address;
 
+      response.data.data.client_order.address_name =
+        jsonClientAddress.address_name;
+
       setOpenAdd(false);
       addClientOrders(response.data.data.client_order);
     } catch (err) {
