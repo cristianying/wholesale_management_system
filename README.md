@@ -27,4 +27,4 @@ To run in prod:
 - Optional: in the package.json remove "start": "nodemon server.js" and replace with "start": "node server.js"
 
 - The frontend react in https://vercel.com/cristianying/
-- in the src/apis/Warehousedb.js replace local host url with baseURL: "wholesalemanagementsystem-production.up.railway.app",
+- in the src/apis/Warehousedb.js replace local host url with baseURL: "https://wholesalemanagementsystem-production.up.railway.app",
