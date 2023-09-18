@@ -144,7 +144,7 @@ const Contacts = ({ setAuth }) => {
         return (
           <>
             <Stack spacing={2} direction="row">
-              <Tooltip title="Save Changes" arrow>
+              <Tooltip title="Edit Client" arrow>
                 <Button
                   // onClick={() => setOpenEdit(true)}
                   onClick={(e) => onEdit(e, params.row)}
@@ -162,7 +162,7 @@ const Contacts = ({ setAuth }) => {
                   <SaveAsIcon />
                 </Button>
               </Tooltip>
-              <Tooltip title="Delete Record" arrow>
+              <Tooltip title="Delete Client" arrow>
                 <Button
                   onClick={(e) => onDelete(e, params.row)}
                   variant="contained"
@@ -274,6 +274,7 @@ const Contacts = ({ setAuth }) => {
           getRowId={(row) => row.client_id}
           rows={clients}
           columns={columns}
+          rowHeight={70}
           components={{
             Toolbar: GridToolbar,
           }}

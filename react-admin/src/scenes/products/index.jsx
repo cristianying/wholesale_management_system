@@ -108,7 +108,7 @@ const Products = ({ setAuth }) => {
         return (
           <>
             <Stack spacing={2} direction="row">
-              <Tooltip title="Save Changes" arrow>
+              <Tooltip title="Edit product" arrow>
                 <Button
                   // onClick={(e) => onEdit(e, params.row)}
                   onClick={(e) => onEdit(e, params.row)}
@@ -126,7 +126,7 @@ const Products = ({ setAuth }) => {
                   <SaveAsIcon />
                 </Button>
               </Tooltip>
-              <Tooltip title="Delete Record" arrow>
+              <Tooltip title="Delete product" arrow>
                 <Button
                   onClick={(e) => onDelete(e, params.row)}
                   variant="contained"

@@ -83,7 +83,7 @@ const AddClientAddress = ({ setOpenAdd, clients }) => {
             sx={{ m: 1, bgcolor: colors.greenAccent[700], borderRadius: "8px" }}
           />
           <Typography component="h1" variant="h5">
-            Add new client <form action="" method="post"></form>
+            Add new address <form action="" method="post"></form>
           </Typography>
           <Box
             component="form"
@@ -111,7 +111,7 @@ const AddClientAddress = ({ setOpenAdd, clients }) => {
             </TextField>
             <FormTextField
               id="name"
-              label="name"
+              label="address name"
               name="name"
               autoComplete="name"
               value={name}
