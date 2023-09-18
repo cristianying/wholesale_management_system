@@ -11,4 +11,11 @@ next steps:
       - need to do edit, remove client name edit, add delivery location edit, payment status
       - for deliver location check if need to move delivery locations fetching from add to index
     - add type of shipment i.e. self pick up, truck, plane, etc..
+      - no need for now
     - decouple status, to show payment status on its own column
+all done
+
+17 Sept
+next steps:
+- clean up and share with tino in prod
+  - make sure buttons have desc and are not cliccable if not set up properly i.e. only enable add product to order if order is selected

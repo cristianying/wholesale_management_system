@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Grid,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -163,13 +164,14 @@ const ClientOrders = ({ setAuth }) => {
       headerName: "Actions",
       description: "Actions column.",
       sortable: false,
-      minWidth: 130,
+      align: "center",
+      headerAlign: "center",
       disableClickEventBubbling: true,
       renderCell: (params) => {
         return (
           <>
-            <Stack spacing={1} direction="row">
-              <Tooltip title="Save Changes" arrow>
+            <Stack spacing={1} direction="column">
+              <Tooltip title="Edit order" arrow>
                 <Button
                   onClick={(e) => {
                     e.ignore = true;
@@ -189,7 +191,7 @@ const ClientOrders = ({ setAuth }) => {
                   <SaveAsIcon />
                 </Button>
               </Tooltip>
-              <Tooltip title="Delete Record" arrow>
+              <Tooltip title="Delete order" arrow>
                 <Button
                   onClick={(e) => onDelete(e, params.row)}
                   variant="contained"
@@ -246,13 +248,17 @@ const ClientOrders = ({ setAuth }) => {
 
   return (
     <Box m="10px">
-      <Box display="flex" justifyContent="space-between" width="100%">
-        <Box
+      <Grid container spacing={1}>
+        {/* <Box display="flex" justifyContent="space-between" width="100%"> */}
+        {/* <Box
+          // width="100%"
           sx={{
             flexGrow: 1,
+
             // overflow: "auto"
           }}
-        >
+        > */}
+        <Grid item sm={12} md={12} lg={7}>
           <Box display="flex" justifyContent="space-between">
             <Header title="Orders" subtitle="List of your Clients' Orders" />
             <Button
@@ -346,6 +352,7 @@ const ClientOrders = ({ setAuth }) => {
               getRowId={(row) => row.order_id}
               rows={clientOrders}
               columns={columns}
+              rowHeight={100}
               components={{
                 Toolbar: GridToolbar,
               }}
@@ -357,17 +364,23 @@ const ClientOrders = ({ setAuth }) => {
               }}
             />
           </Box>
-        </Box>
+          {/* </Box> */}
+        </Grid>
 
-        <Box
+        {/* <Box
+          // width="100%"
           sx={{
             flexGrow: 2,
+
             // overflow: "auto"
           }}
-        >
+        > */}
+        <Grid item sm={12} md={12} lg={5}>
           <ClientOrdersDetailPage orderId={orderId} />
-        </Box>
-      </Box>
+        </Grid>
+        {/* </Box> */}
+        {/* </Box> */}
+      </Grid>
     </Box>
   );
 };

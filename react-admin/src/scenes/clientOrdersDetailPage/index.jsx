@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  Hidden,
   Stack,
   Tooltip,
 } from "@mui/material";
@@ -191,7 +192,7 @@ const ClientOrdersDetailPage = ({ orderId }) => {
         return (
           <>
             <Stack spacing={1} direction="column">
-              <Tooltip title="Save Changes" arrow>
+              <Tooltip title="Edit product" arrow>
                 <Button
                   onClick={(e) => {
                     e.ignore = true;
@@ -211,7 +212,7 @@ const ClientOrdersDetailPage = ({ orderId }) => {
                   <SaveAsIcon />
                 </Button>
               </Tooltip>
-              <Tooltip title="Delete Record" arrow>
+              <Tooltip title="Delete product" arrow>
                 <Button
                   onClick={(e) => onDelete(e, params.row)}
                   variant="contained"
@@ -234,6 +235,7 @@ const ClientOrdersDetailPage = ({ orderId }) => {
       },
     },
   ];
+  // console.log(orderId.length == 0);
 
   return (
     <Box ml="10px">
@@ -243,6 +245,7 @@ const ClientOrdersDetailPage = ({ orderId }) => {
           onClick={() => setOpenAdd(true)}
           sx={{
             m: 4,
+            visibility: orderId.length == 0 ? "hidden" : "visible",
             bgcolor: colors.greenAccent[700],
             ":hover": {
               bgcolor: colors.blueAccent[700], // theme.palette.primary.main
@@ -250,7 +253,7 @@ const ClientOrdersDetailPage = ({ orderId }) => {
             },
           }}
         >
-          <Tooltip title="Add new order" arrow>
+          <Tooltip title="Add new product to order" arrow>
             <AddIcon />
           </Tooltip>
         </Button>

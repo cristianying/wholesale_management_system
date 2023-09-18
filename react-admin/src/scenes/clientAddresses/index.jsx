@@ -136,7 +136,7 @@ const ClientAddresses = ({ setAuth }) => {
         return (
           <>
             <Stack spacing={2} direction="row">
-              <Tooltip title="Save Changes" arrow>
+              <Tooltip title="Edit Address" arrow>
                 <Button
                   // onClick={() => setOpenEdit(true)}
                   onClick={(e) => onEdit(e, params.row)}
@@ -154,7 +154,7 @@ const ClientAddresses = ({ setAuth }) => {
                   <SaveAsIcon />
                 </Button>
               </Tooltip>
-              <Tooltip title="Delete Record" arrow>
+              <Tooltip title="Delete Address" arrow>
                 <Button
                   onClick={(e) => onDelete(e, params.row)}
                   variant="contained"
@@ -196,7 +196,7 @@ const ClientAddresses = ({ setAuth }) => {
             },
           }}
         >
-          <Tooltip title="Add new client" arrow>
+          <Tooltip title="Add new address" arrow>
             <AddIcon />
           </Tooltip>
         </Button>
@@ -273,6 +273,7 @@ const ClientAddresses = ({ setAuth }) => {
           getRowId={(row) => row.delivery_address_id}
           rows={clientAddresses}
           columns={columns}
+          rowHeight={70}
           components={{
             Toolbar: GridToolbar,
           }}
