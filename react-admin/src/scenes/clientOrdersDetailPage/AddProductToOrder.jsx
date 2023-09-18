@@ -74,8 +74,6 @@ const AddProductToOrder = ({ setOpenAdd, products, setProducts, orderId }) => {
     // console.log("im the client: ", name, clientId);
   };
 
-  // console.log(pieceSellPrice);
-
   return (
     <>
       <Container
@@ -134,11 +132,7 @@ const AddProductToOrder = ({ setOpenAdd, products, setProducts, orderId }) => {
               name="Box Quantity"
               autoComplete="Box Quantity"
               type="number"
-              error={
-                boxQuantity > productQuantity ||
-                boxQuantity <= 0 ||
-                Math.floor(boxQuantity) != boxQuantity
-              }
+              error={boxQuantity > productQuantity || boxQuantity <= 0}
               helperText={`Available ${productQuantity} Boxes`}
               value={boxQuantity}
               onChange={(e) => setBoxQuantity(e.target.value)}
@@ -160,9 +154,7 @@ const AddProductToOrder = ({ setOpenAdd, products, setProducts, orderId }) => {
                 boxQuantity > productQuantity ||
                 boxQuantity <= 0 ||
                 productQuantity <= 0 ||
-                pieceSellPrice < 0 ||
-                pieceSellPrice == "" ||
-                Math.floor(boxQuantity) != boxQuantity
+                pieceSellPrice < 0
                   ? true
                   : disabled
               }
