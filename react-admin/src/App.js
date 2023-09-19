@@ -70,66 +70,63 @@ function App() {
         <ThemeProvider theme={theme}>
           <WarehouseContextProvider>
             <CssBaseline />
-            <div className="app">
-              {!isLoginPage && <Sidebar />}
-              <main className="content">
-                {!isLoginPage && <Topbar setAuth={setAuth} />}
+            <>
+              {!isAuthenticated ? (
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
-                  <Route path="/team" element={<Team />} />
-                  <Route
-                    path="/clients"
-                    element={
-                      !isAuthenticated ? (
-                        <Navigate to="/login" />
-                      ) : (
-                        <Clients setAuth={setAuth} />
-                      )
-                    }
-                  />
-                  <Route
-                    path="/clients_addresses"
-                    element={
-                      !isAuthenticated ? (
-                        <Navigate to="/login" />
-                      ) : (
-                        <ClientAddresses setAuth={setAuth} />
-                      )
-                    }
-                  />
-                  <Route
-                    path="/products"
-                    element={
-                      !isAuthenticated ? (
-                        <Navigate to="/login" />
-                      ) : (
-                        <Products setAuth={setAuth} />
-                      )
-                    }
-                  />
-                  <Route path="/login" element={<Login setAuth={setAuth} />} />
+                  <Route path="*" element={<Login setAuth={setAuth} />} />
                   <Route
                     path="/register"
                     element={<Register setAuth={setAuth} />}
                   />
-                  <Route
-                    path="/orders"
-                    element={<ClientOrders setAuth={setAuth} />}
-                  />
-                  <Route
-                    path="/client_order_detail_page/:id"
-                    element={<ClientOrdersDetailPage setAuth={setAuth} />}
-                  />
-                  {/* <Route path="/form" element={<Form />} />
+                </Routes>
+              ) : (
+                <div className="app">
+                  {!isLoginPage && <Sidebar />}
+                  <main className="content">
+                    {!isLoginPage && <Topbar setAuth={setAuth} />}
+                    <Routes>
+                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/team" element={<Team />} />
+                      <Route
+                        path="/clients"
+                        element={<Clients setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/clients_addresses"
+                        element={<ClientAddresses setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/products"
+                        element={<Products setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/login"
+                        element={<Login setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/register"
+                        element={<Register setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/orders"
+                        element={<ClientOrders setAuth={setAuth} />}
+                      />
+                      <Route
+                        path="/client_order_detail_page/:id"
+                        element={<ClientOrdersDetailPage setAuth={setAuth} />}
+                      />
+                      {/* <Route path="/form" element={<Form />} />
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} /> */}
-                </Routes>
-              </main>
-            </div>
+                    </Routes>
+                  </main>
+                </div>
+              )}
+            </>
           </WarehouseContextProvider>
         </ThemeProvider>
         <ToastContainer
